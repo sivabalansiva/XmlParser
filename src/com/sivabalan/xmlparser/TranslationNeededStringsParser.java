@@ -6,8 +6,19 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.Set;
 
 public class TranslationNeededStringsParser {
 
@@ -22,6 +33,8 @@ public class TranslationNeededStringsParser {
     private final HashMap<String, String> strings = new HashMap<>();
     private final HashMap<File, HashMap<String, String>> table = new HashMap<>();
     private final HashSet<String> nonTranslatableStringsSet = new HashSet<>();
+
+    private final Set<String> excludeFilesSet = new HashSet<>(List.of("values-night", "values-land"));
 
     static TranslationNeededStringsParser newInstance() {
         return new TranslationNeededStringsParser();
@@ -60,7 +73,9 @@ public class TranslationNeededStringsParser {
                     stringFilesList.add(file);
                 }
             } else {
-                fetchAllStringFiles(file.toString());
+                if (!excludeFilesSet.contains(file.getName())) {
+                    fetchAllStringFiles(file.toString());
+                }
             }
         }
     }
